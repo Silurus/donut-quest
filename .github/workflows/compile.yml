@@ -1,0 +1,38 @@
+name: Проверка компиляции
+
+# Компилирует C#-скрипты без Unity: Mono + эталонные сборки UnityEngine с nuget.
+# Ловит синтаксис, опечатки, неверные сигнатуры — то, что иначе всплывает
+# только при открытии проекта в редакторе.
+#
+# Полноценная сборка игры (GameCI) потребует лицензии Unity и будет добавлена
+# отдельно, когда появится аккаунт Unity.
+
+on:
+  push:
+    paths:
+      - 'Assets/Scripts/**'
+      - 'tools/compilecheck/**'
+      - '.github/workflows/compile.yml'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Поставить Mono
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq mono-devel
+
+      - name: Скачать эталонные сборки Unity
+        run: |
+          mkdir -p "$RUNNER_TEMP/unityrefs"
+          curl -sL -o "$RUNNER_TEMP/unityrefs/sdk.zip" \
+            "https://www.nuget.org/api/v2/package/unity3d.sdk"
+          unzip -q "$RUNNER_TEMP/unityrefs/sdk.zip" -d "$RUNNER_TEMP/unityrefs/sdk"
+
+      - name: Скомпилировать скрипты
+        env:
+          UNITY_REFS_DIR: ${{ runner.temp }}/unityrefs/sdk/lib
+        run: bash tools/compilecheck/check.sh

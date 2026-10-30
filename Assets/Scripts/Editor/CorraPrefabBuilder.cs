@@ -3,6 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using DonutQuest.Gameplay;
 
 namespace DonutQuest.EditorTools
 {

@@ -182,7 +182,7 @@
 
 - **Версия:** Unity 6.3 LTS (2026–2027, ещё +1 год для Enterprise).
 - **Платформы:** Windows x64 и Linux (нативно). Steam Deck также поддерживает через Proton либо нативную Linux-сборку.
-- **Рендер:** Universal Render Pipeline (URP 17.x), Vulkan на Linux/Deck, DirectX 11 на Windows.
+- **Рендер:** встроенный рендер Unity (Built-in Render Pipeline). URP не подключаем: его 17.x нет в публичном реестре Unity, простая low-poly графика в URP не нуждается. Vulkan на Linux/Deck, DirectX 11 на Windows.
 - **Управление:** Input System пакет (v1.17+), поддержка Steam Input через Gamepad напрямую.
 - **Язык:** C#.
 - **Сохранения:** Application.persistentDataPath автоматически (Windows: AppData/LocalLow; Linux: ~/.config/unity3d/...).
@@ -191,7 +191,7 @@
 **3D Модели:**
 - **Корра (корги-девочка):** Quaternius Vol.2 «Dog» (CC0, FBX с риггингом и анимациями: Idle, Walk, Run, Jump, Attack). Модель может быть использована как Корра или переименована/перекрашена.
 - **Кот (рыжий):** Quaternius Vol.2 «Cat» (CC0, FBX, аналогичные анимации). Используется как враг/персонаж, требует переделки цвета на рыжий.
-- **Птицы, окружение:** Kenney Nature Vegetation, Kenney Farming Tiles (CC0, низкополи, готовые к использованию в URP).
+- **Птицы, окружение:** Kenney Nature Vegetation, Kenney Farming Tiles (CC0, низкополи, работают с любым рендером).
 
 ---
 
