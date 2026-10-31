@@ -12,19 +12,19 @@ namespace DonutQuest.EditorTools
     /// Меню: Donut Quest → Собрать префаб Корры.
     ///
     /// Что делает:
-    /// 1. Берёт corgi.glb из Assets/Models/Corra.
+    /// 1. Берёт corgi.glb из Assets/Models/Korra.
     /// 2. Создаёт Animator Controller, где на каждый клип модели есть состояние
     ///    с тем же именем (Run, Jump, Sitting).
-    /// 3. Собирает Assets/Prefabs/Corra.prefab: корень с физикой и вводом,
-    ///    внутри — модель с Animator и CorraAnimator.
+    /// 3. Собирает Assets/Prefabs/Korra.prefab: корень с физикой и вводом,
+    ///    внутри — модель с Animator и KorraAnimator.
     ///
     /// Запускать из Unity, из-под рута проекта. Повторный запуск пересобирает префаб.
     /// </summary>
-    public static class CorraPrefabBuilder
+    public static class KorraPrefabBuilder
     {
-        const string ModelPath = "Assets/Models/Corra/corgi.glb";
-        const string ControllerPath = "Assets/Models/Corra/CorraAnimator.controller";
-        const string PrefabPath = "Assets/Prefabs/Corra.prefab";
+        const string ModelPath = "Assets/Models/Korra/corgi.glb";
+        const string ControllerPath = "Assets/Models/Korra/KorraAnimator.controller";
+        const string PrefabPath = "Assets/Prefabs/Korra.prefab";
 
         /// <summary>
         /// Поворот модели вокруг Y. glTF — правая система координат, Unity — левая:
@@ -42,7 +42,7 @@ namespace DonutQuest.EditorTools
             {
                 EditorUtility.DisplayDialog("Нет модели",
                     $"Не нашёл {ModelPath}.\n" +
-                    "Положи corgi.glb в Assets/Models/Corra/ и повтори.",
+                    "Положи corgi.glb в Assets/Models/Korra/ и повтори.",
                     "Понял");
                 return;
             }
@@ -105,7 +105,7 @@ namespace DonutQuest.EditorTools
         {
             Directory.CreateDirectory(Path.GetDirectoryName(PrefabPath));
 
-            var root = new GameObject("Corra");
+            var root = new GameObject("Korra");
 
             var cc = root.AddComponent<CharacterController>();
             cc.height = 0.6f;
@@ -114,8 +114,8 @@ namespace DonutQuest.EditorTools
             cc.slopeLimit = 50f;
             cc.stepOffset = 0.15f;
 
-            root.AddComponent<CorraInput>();
-            root.AddComponent<CorraController>();
+            root.AddComponent<KorraInput>();
+            root.AddComponent<KorraController>();
 
             // Модель — дочерний объект: её локальные оси не мешают повороту персонажа.
             var visual = (GameObject)PrefabUtility.InstantiatePrefab(model);
@@ -129,8 +129,8 @@ namespace DonutQuest.EditorTools
             animator.runtimeAnimatorController = controller;
             animator.applyRootMotion = false;
 
-            if (visual.GetComponent<CorraAnimator>() == null)
-                visual.AddComponent<CorraAnimator>();
+            if (visual.GetComponent<KorraAnimator>() == null)
+                visual.AddComponent<KorraAnimator>();
 
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);

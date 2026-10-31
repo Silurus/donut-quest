@@ -6,8 +6,8 @@ namespace DonutQuest.Gameplay
     /// Движение Корры: шаг, бег, рывок, прыжок. Камера сбоку, поэтому Z всегда 0.
     /// Числа — стартовые из SPEC.md (раздел 4), крутятся в инспекторе Unity.
     /// </summary>
-    [RequireComponent(typeof(CharacterController), typeof(CorraInput))]
-    public class CorraController : MonoBehaviour
+    [RequireComponent(typeof(CharacterController), typeof(KorraInput))]
+    public class KorraController : MonoBehaviour
     {
         [Header("Скорости, м/с")]
         public float walkSpeed = 3f;
@@ -35,14 +35,14 @@ namespace DonutQuest.Gameplay
         public bool Locked { get; set; }
 
         CharacterController _cc;
-        CorraInput _input;
+        KorraInput _input;
         Vector3 _velocity;
         float _sprintLeft, _cooldownLeft, _coyoteLeft, _bufferLeft;
 
         void Awake()
         {
             _cc = GetComponent<CharacterController>();
-            _input = GetComponent<CorraInput>();
+            _input = GetComponent<KorraInput>();
         }
 
         void Update()

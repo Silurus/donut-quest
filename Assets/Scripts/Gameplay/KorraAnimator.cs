@@ -3,7 +3,7 @@ using UnityEngine;
 namespace DonutQuest.Gameplay
 {
     /// <summary>
-    /// Проигрывание анимаций Корры. Отдельный компонент: CorraController знает
+    /// Проигрывание анимаций Корры. Отдельный компонент: KorraController знает
     /// только физику, а про Animator не знает ничего.
     ///
     /// В модели corgi.glb три клипа от автора: Run, Jump, Sitting.
@@ -15,7 +15,7 @@ namespace DonutQuest.Gameplay
     /// впиши имена в поля ниже. Код менять не придётся.
     /// </summary>
     [RequireComponent(typeof(Animator))]
-    public class CorraAnimator : MonoBehaviour
+    public class KorraAnimator : MonoBehaviour
     {
         [Header("Имена клипов (как в модели или в Animator Controller)")]
         public string idleClip = "Sitting";
@@ -36,8 +36,8 @@ namespace DonutQuest.Gameplay
         /// <summary>Идёт сохранение (сидит у куста) — контроллер движения это уважает.</summary>
         public bool IsSaving { get; private set; }
 
-        CorraController _move;
-        CorraInput _input;
+        KorraController _move;
+        KorraInput _input;
         Animator _anim;
 
         string _current;
@@ -46,8 +46,8 @@ namespace DonutQuest.Gameplay
         void Awake()
         {
             _anim = GetComponent<Animator>();
-            _move = GetComponentInParent<CorraController>();
-            _input = GetComponentInParent<CorraInput>();
+            _move = GetComponentInParent<KorraController>();
+            _input = GetComponentInParent<KorraInput>();
         }
 
         void Update()

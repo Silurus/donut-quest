@@ -8,7 +8,7 @@ namespace DonutQuest.Gameplay
     /// и не знают, геймпад это или клавиатура.
     /// Действия создаются в коде (без .inputactions-ассета), чтобы всё было видно в git-диффе.
     /// </summary>
-    public class CorraInput : MonoBehaviour
+    public class KorraInput : MonoBehaviour
     {
         InputAction _move, _jump, _run, _sprint, _bark, _pause;
 

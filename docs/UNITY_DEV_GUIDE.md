@@ -19,9 +19,9 @@ donut-quest/
 │   ├── Models/Cat/Cat.fbx         # Quaternius cat (рыжий кот)
 │   ├── Scenes/                    # здесь будет YardLevel.unity
 │   ├── Scripts/Gameplay/
-│   │   ├── CorraInput.cs          # ввод с геймпада/клавиатуры
-│   │   └── CorraController.cs     # движение, прыжок, рывок
-│   └── Prefabs/                   # сюда положим Corra.prefab
+│   │   ├── KorraInput.cs          # ввод с геймпада/клавиатуры
+│   │   └── KorraController.cs     # движение, прыжок, рывок
+│   └── Prefabs/                   # сюда положим Korra.prefab
 └── .gitignore
 ```
 
@@ -57,7 +57,7 @@ Unity Hub заблокирован в РФ/РБ по IP. Установка:
 
 ## Что делают скрипты
 
-### `CorraInput.cs`
+### `KorraInput.cs`
 Единая точка ввода с геймпада и клавиатуры. Создаёт действия (`InputAction`) в коде, без ассета `.inputactions`, чтобы всё было видно в git-диффе.
 
 **Привязки по умолчанию:**
@@ -70,7 +70,7 @@ Unity Hub заблокирован в РФ/РБ по IP. Установка:
 
 Другие скрипты читают свойства типа `_input.JumpPressed`, `_input.Move` и не знают, какое устройство использовано.
 
-### `CorraController.cs`
+### `KorraController.cs`
 Движение Корры: шаг, бег, рывок, прыжок. Всё из спеки (раздел 4):
 - Скорости: 3/6/10 м/с (шаг/бег/рывок).
 - Рывок на 1,5 с, перезарядка 3 с.
@@ -103,7 +103,7 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 - Scale: (50, 1, 1) — длинная платформа по X
 
 ### 3. Создай Корру (капсула)
-**Hierarchy → ПКМ → 3D Object → Capsule**. Назови `Corra`.  
+**Hierarchy → ПКМ → 3D Object → Capsule**. Назови `Korra`.  
 **Inspector:**
 - Position: (0, 2, 0) — над землёй
 - Rotation: (0, 90, 90) — капсула лёжа, голова вправо
@@ -115,10 +115,10 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
   - Radius: 0.5
   - Height: 1.0
   - Skin Width: 0.08
-- **Add Component** → `CorraInput` (начни печатать, Unity найдёт)
-- **Add Component** → `CorraController`
+- **Add Component** → `KorraInput` (начни печатать, Unity найдёт)
+- **Add Component** → `KorraController`
 
-В инспекторе CorraController видны поля из скрипта: `walkSpeed`, `jumpHeight` и так далее. Значения по умолчанию уже стоят из кода — можешь крутить.
+В инспекторе KorraController видны поля из скрипта: `walkSpeed`, `jumpHeight` и так далее. Значения по умолчанию уже стоят из кода — можешь крутить.
 
 ### 4. Настрой камеру
 Выбери `Main Camera` в Hierarchy.  
@@ -149,11 +149,11 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 
 ## Модель Корры — готова и лежит в проекте
 
-**Файл:** `Assets/Models/Corra/corgi.glb` (492 КБ)
+**Файл:** `Assets/Models/Korra/corgi.glb` (492 КБ)
 
 - **Название:** Dog corgi animated
 - **Автор:** zinaida — https://sketchfab.com/zinaida
-- **Лицензия:** CC BY 4.0. При публикации игры нужно указать автора — текст готов в `Assets/Models/Corra/ATTRIBUTION.md`.
+- **Лицензия:** CC BY 4.0. При публикации игры нужно указать автора — текст готов в `Assets/Models/Korra/ATTRIBUTION.md`.
 
 Что я в ней проверил, разобрав контейнер скриптом (Unity для этого не нужен):
 
@@ -175,15 +175,15 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 
 1. Проверь импорт: кликни `corgi.glb` в Project → в инспекторе вкладка **Animation** → должно быть три клипа `Run`, `Jump`, `Sitting`. Если клипов нет — включи **Import Animation** и **Animation Method → Mecanim**, нажми **Apply**.
 2. Меню **Donut Quest → Собрать префаб Корры**.
-3. Готовый префаб появится в `Assets/Prefabs/Corra.prefab` и подсветится.
+3. Готовый префаб появится в `Assets/Prefabs/Korra.prefab` и подсветится.
 4. Перетащи его в сцену, нажми Play. Корра бегает на A/D или стике.
 
-Что делает сборщик (`Assets/Scripts/Editor/CorraPrefabBuilder.cs`):
-- создаёт `CorraAnimator.controller` со состоянием на каждый клип модели;
-- собирает корень `Corra` с `CharacterController` + `CorraInput` + `CorraController`;
-- внутрь кладёт модель дочерним объектом (`Model`) с `Animator` и `CorraAnimator`.
+Что делает сборщик (`Assets/Scripts/Editor/KorraPrefabBuilder.cs`):
+- создаёт `KorraAnimator.controller` со состоянием на каждый клип модели;
+- собирает корень `Korra` с `CharacterController` + `KorraInput` + `KorraController`;
+- внутрь кладёт модель дочерним объектом (`Model`) с `Animator` и `KorraAnimator`.
 
-Модель повёрнута на 180° вокруг Y: glTF — правая система координат, Unity — левая, и без разворота Корра бежала бы задом наперёд. Если всё-таки бежит спиной вперёд, поменяй `ModelYaw` в начале `CorraPrefabBuilder.cs` с 180 на 0 и запусти сборку снова.
+Модель повёрнута на 180° вокруг Y: glTF — правая система координат, Unity — левая, и без разворота Корра бежала бы задом наперёд. Если всё-таки бежит спиной вперёд, поменяй `ModelYaw` в начале `KorraPrefabBuilder.cs` с 180 на 0 и запусти сборку снова.
 
 ---
 
@@ -191,12 +191,12 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 
 | Файл | Что делает |
 |---|---|
-| `Scripts/Gameplay/CorraInput.cs` | Ввод: стик, крестовина, A/B/X/Y, клавиатура. Действия создаются в коде, без `.inputactions`-ассета |
-| `Scripts/Gameplay/CorraController.cs` | Физика: шаг, бег, рывок, прыжок с coyote time и буфером нажатия |
-| `Scripts/Gameplay/CorraAnimator.cs` | Анимации: выбор клипа по состоянию движения |
-| `Scripts/Editor/CorraPrefabBuilder.cs` | Сборка префаба, только для редактора |
+| `Scripts/Gameplay/KorraInput.cs` | Ввод: стик, крестовина, A/B/X/Y, клавиатура. Действия создаются в коде, без `.inputactions`-ассета |
+| `Scripts/Gameplay/KorraController.cs` | Физика: шаг, бег, рывок, прыжок с coyote time и буфером нажатия |
+| `Scripts/Gameplay/KorraAnimator.cs` | Анимации: выбор клипа по состоянию движения |
+| `Scripts/Editor/KorraPrefabBuilder.cs` | Сборка префаба, только для редактора |
 
-`CorraController` про анимации не знает — это отдельный компонент. Такое разделение позволяет менять модель и клипы, не трогая физику.
+`KorraController` про анимации не знает — это отдельный компонент. Такое разделение позволяет менять модель и клипы, не трогая физику.
 
 ---
 
@@ -213,7 +213,7 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 
 ## Как модель подключается к проекту
 
-1. **Файл в репозитории.** `corgi.glb` лежит в `Assets/Models/Corra/`, попадает в git вместе с кодом. Ничего скачивать при клонировании не нужно.
+1. **Файл в репозитории.** `corgi.glb` лежит в `Assets/Models/Korra/`, попадает в git вместе с кодом. Ничего скачивать при клонировании не нужно.
 2. **Импорт.** Unity при открытии проекта видит новый файл, ставит пакет `glTFast` из манифеста и импортирует модель: создаёт меш, материал, скелет и три Animation Clip.
 3. **Настройка.** В инспекторе модели: Rig → Generic (собака — не гуманоид), Animation → Mecanim.
 4. **Сборка префаба.** Меню **Donut Quest → Собрать префаб Корры** делает из модели готового персонажа: физика и скрипты на корне, модель внутри.
@@ -225,7 +225,7 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 
 После прототипа движения:
 1. **Animator Controller:** создашь граф переключения анимаций (Idle → Walk → Run → Jump).
-2. **Лай:** скрипт `CorraBark.cs`, который проверяет ближайшие объекты и вызывает реакции (кот роняет предмет, птицы взлетают).
+2. **Лай:** скрипт `KorraBark.cs`, который проверяет ближайшие объекты и вызывает реакции (кот роняет предмет, птицы взлетают).
 3. **Сохранение:** скрипт `SaveZone.cs` у кустов, удержание X → сохранить в JSON через `Application.persistentDataPath`.
 4. **Собираемые предметы:** огурчики и сыр как Prefab с триггер-коллайдером, подбор на `OnTriggerEnter`.
 5. **HUD:** Canvas с UI Toolkit или старый UGUI — счётчики, полоска выносливости.
