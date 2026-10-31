@@ -36,3 +36,6 @@ jobs:
         env:
           UNITY_REFS_DIR: ${{ runner.temp }}/unityrefs/sdk/lib
         run: bash tools/compilecheck/check.sh
+
+      - name: Сверить API Input System с настоящим пакетом
+        run: bash tools/compilecheck/verify_input_api.sh

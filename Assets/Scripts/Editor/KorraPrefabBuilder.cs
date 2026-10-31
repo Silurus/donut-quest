@@ -106,6 +106,8 @@ namespace DonutQuest.EditorTools
             Directory.CreateDirectory(Path.GetDirectoryName(PrefabPath));
 
             var root = new GameObject("Korra");
+            // Тег Player встроен в Unity. По нему SaveZone и другие триггеры узнают Корру.
+            root.tag = "Player";
 
             var cc = root.AddComponent<CharacterController>();
             cc.height = 0.6f;
