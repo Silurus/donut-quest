@@ -1,0 +1,190 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2950676120777592246
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8589487850122320914}
+  - component: {fileID: 8258543389157285420}
+  - component: {fileID: 1794794378197081977}
+  - component: {fileID: 6785513111807026798}
+  m_Layer: 0
+  m_Name: Korra
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8589487850122320914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950676120777592246}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3811230302858842181}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!143 &8258543389157285420
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950676120777592246}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 0.6
+  m_Radius: 0.16
+  m_SlopeLimit: 50
+  m_StepOffset: 0.15
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.3, z: 0}
+--- !u!114 &1794794378197081977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950676120777592246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b928a11b769e65540b5aa39405670df2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DonutQuest.Gameplay.KorraInput
+--- !u!114 &6785513111807026798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950676120777592246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 568f7b25f7f128b4098c0c9b3241c34c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DonutQuest.Gameplay.KorraController
+  walkSpeed: 3
+  runSpeed: 6
+  sprintSpeed: 10
+  sprintDuration: 1.5
+  sprintCooldown: 3
+  jumpHeight: 1.6
+  gravity: -25
+  jumpCutMultiplier: 0.5
+  coyoteTime: 0.1
+  jumpBuffer: 0.1
+--- !u!1001 &5736713886734448779
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8589487850122320914}
+    m_Modifications:
+    - target: {fileID: -5644133064174452605, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 568f37a4cf639eb4ab148071f585505d, type: 2}
+    - target: {fileID: 8128668236925612103, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_Name
+      value: Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8128668236925612103, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1157670174277225547}
+  m_SourcePrefab: {fileID: -5645937942226959685, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+--- !u!4 &3811230302858842181 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8897093224900880590, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+  m_PrefabInstance: {fileID: 5736713886734448779}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4562764704848070860 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8128668236925612103, guid: a9a015b135d27994a8d29d3b3bff8135, type: 3}
+  m_PrefabInstance: {fileID: 5736713886734448779}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1157670174277225547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4562764704848070860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4415459f8549094dbd1605dcd015cf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DonutQuest.Gameplay.KorraAnimator
+  idleClip: Sitting
+  runClip: Run
+  jumpClip: Jump
+  sitClip: Sitting
+  barkClip: Jump
+  walkClipSpeed: 0.55
+  runClipSpeed: 1
+  crossfade: 0.12

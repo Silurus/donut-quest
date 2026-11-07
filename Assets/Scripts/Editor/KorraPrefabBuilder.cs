@@ -27,12 +27,9 @@ namespace DonutQuest.EditorTools
         const string PrefabPath = "Assets/Prefabs/Korra.prefab";
 
         /// <summary>
-        /// Поворот модели вокруг Y. glTF — правая система координат, Unity — левая:
-        /// при импорте ось Z переворачивается, и собака, смотревшая в glTF на +Z,
-        /// в Unity смотрит на -Z. Разворот на 180° ставит её носом вперёд.
-        /// Если в игре Корра бежит задом наперёд — поменяй здесь 180f на 0f.
+        /// Поворот модели вокруг Y. Если в игре Корра бежит задом наперёд — поменяй здесь 0f на 180f.
         /// </summary>
-        const float ModelYaw = 180f;
+        const float ModelYaw = 0;
 
         [MenuItem("Donut Quest/Собрать префаб Корры")]
         public static void Build()
