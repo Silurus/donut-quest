@@ -115,6 +115,7 @@ namespace DonutQuest.EditorTools
 
             root.AddComponent<KorraInput>();
             root.AddComponent<KorraController>();
+            root.AddComponent<KorraBark>();
 
             // Модель — дочерний объект: её локальные оси не мешают повороту персонажа.
             var visual = (GameObject)PrefabUtility.InstantiatePrefab(model);
