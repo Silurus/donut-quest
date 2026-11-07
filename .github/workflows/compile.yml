@@ -12,6 +12,7 @@ on:
     paths:
       - 'Assets/Scripts/**'
       - 'tools/compilecheck/**'
+      - 'tools/logictest/**'
       - '.github/workflows/compile.yml'
   pull_request:
   workflow_dispatch:
@@ -39,3 +40,6 @@ jobs:
 
       - name: Сверить API Input System с настоящим пакетом
         run: bash tools/compilecheck/verify_input_api.sh
+
+      - name: Тесты логики сохранения
+        run: bash tools/logictest/run.sh

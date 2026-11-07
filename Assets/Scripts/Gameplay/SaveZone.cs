@@ -19,6 +19,7 @@ namespace DonutQuest.Gameplay
         public KorraController korraController;
 
         [Header("Состояние игры, которое пишем в сейв")]
+        [Tooltip("Используется, только если в сцене нет ссылки на KorraController")]
         public int cucumbers;
         public int cheese;
         public float playTimeSeconds;
@@ -73,13 +74,23 @@ namespace DonutQuest.Gameplay
 
         void DoSave()
         {
+            // Позицию берём у Корры, а не у зоны: зона стоит в воздухе (y = 1),
+            // и загрузка уронила бы Корру с высоты. Если ссылки нет — пишем зону.
+            Vector3 pos = transform.position;
+            if (korraController != null) pos = korraController.transform.position;
+
+            // Счётчики — из контроллера, если он есть: именно туда их пишет
+            // загрузка сейва, иначе «Продолжить» → «Сохранить» обнулило бы прогресс.
+            int savedCucumbers = korraController != null ? korraController.cucumbers : cucumbers;
+            int savedCheese = korraController != null ? korraController.cheese : cheese;
+
             var data = new SaveData
             {
-                posX = transform.position.x,
-                posY = transform.position.y,
+                posX = pos.x,
+                posY = pos.y,
                 posZ = 0f,
-                cucumbers = cucumbers,
-                cheese = cheese,
+                cucumbers = savedCucumbers,
+                cheese = savedCheese,
                 playTimeSeconds = playTimeSeconds,
             };
 

@@ -195,9 +195,66 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 | `Scripts/Gameplay/KorraInput.cs` | Ввод: стик, крестовина, A/B/X/Y, клавиатура. Действия создаются в коде, без `.inputactions`-ассета |
 | `Scripts/Gameplay/KorraController.cs` | Физика: шаг, бег, рывок, прыжок с coyote time и буфером нажатия |
 | `Scripts/Gameplay/KorraAnimator.cs` | Анимации: выбор клипа по состоянию движения |
+| `Scripts/Gameplay/SaveSystem.cs` | Сейв: атомарная запись JSON в `persistentDataPath`, один слот |
+| `Scripts/Gameplay/SaveLoadBridge.cs` | Передача сейва из меню в уровень (статическое поле, переживает `LoadScene`) |
+| `Scripts/Gameplay/MainMenu.cs` | Главное меню на IMGUI: «Продолжить», «Новая игра», «Выход» |
+| `Scripts/Gameplay/SaveZone.cs` | Зона сохранения: удержание X, пишет позицию и счётчики |
 | `Scripts/Editor/KorraPrefabBuilder.cs` | Сборка префаба, только для редактора |
+| `Scripts/Editor/LawnSceneBuilder.cs` | Сборка сцены уровня, только для редактора |
+| `Scripts/Editor/MainMenuSceneBuilder.cs` | Сборка сцены меню, только для редактора |
 
 `KorraController` про анимации не знает — это отдельный компонент. Такое разделение позволяет менять модель и клипы, не трогая физику.
+
+---
+
+## Сохранение и «Продолжить»
+
+Один слот: `Application.persistentDataPath/save.json`. На Steam Deck это
+`~/.config/unity3d/DefaultCompany/donut-quest/save.json`.
+
+**Запись атомарная:** сначала пишется `save.json.tmp`, затем `File.Replace` подменяет
+боевой файл. Иначе выключение Steam Deck посреди записи оставило бы битый сейв.
+
+**Как сейв попадает на уровень.** Пункт «Продолжить» читает файл и кладёт `SaveData`
+в статическое поле `SaveLoadBridge`, затем грузит сцену. `KorraController.Start()`
+забирает данные оттуда. Статическое поле выбрано вместо объекта с `DontDestroyOnLoad`,
+потому что не требует ни префаба, ни поиска по имени, ни уборки за собой.
+
+**Что пишется:** позиция (берётся у Корры, а не у зоны — зона висит в воздухе на y = 1),
+огурчики, сыр, время игры, метка UTC.
+
+Проверка логики сейва без Unity:
+
+```bash
+bash tools/logictest/run.sh
+```
+
+Тесты гоняют **настоящий** `SaveSystem.cs` под Mono с подменённым `UnityEngine`
+(`tools/logictest/UnityEngine.Fake.cs`): 25 проверок, включая атомарную перезапись,
+битый файл и цикл «Продолжить → Сохранить».
+
+---
+
+## Главное меню
+
+Меню рисуется через IMGUI (`OnGUI`), а не через Canvas. Причина: Canvas-меню — это
+`.prefab` и `.unity`-файлы, бинарные и нечитаемые в диффе. IMGUI-меню живёт в одном
+`.cs`-файле, который видно в git целиком.
+
+**Навигация сделана на собственных `InputAction`**, а не через `EventSystem` +
+`InputSystemUIInputModule`. Важно: `InputSystemUIInputModule` управляет только uGUI
+(Canvas), к IMGUI он не подключается. Если бы меню осталось на `EventSystem`,
+на Steam Deck оно бы не реагировало на геймпад.
+
+Управление: стик / крестовина / ↑↓ или W/S — выбор, A / Enter / Space — подтвердить.
+Мышь тоже работает. «Продолжить» появляется в списке, только если файл сейва существует.
+
+Сцены в Build Settings расставляет сборщик: `00_MainMenu` — индекс 0 (с неё стартует
+билд), `01_Lawn` — индекс 1. Без этого `SceneManager.LoadScene("01_Lawn")` в билде упадёт.
+
+**Шрифт:** в Unity 6 встроенный шрифт называется `LegacyRuntime.ttf`
+(старое имя `Arial.ttf` убрано в 2022+). Если запросить `Arial.ttf`, вернётся `null`
+и меню будет без текста — поэтому имя зашито одно.
 
 ---
 

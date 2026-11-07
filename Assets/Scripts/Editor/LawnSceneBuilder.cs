@@ -91,6 +91,12 @@ namespace DonutQuest.EditorTools
 
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
             EditorSceneManager.SaveScene(scene, ScenePath);
+
+            // Прописываем сцены в Build Settings: меню — индекс 0 (с неё стартует билд),
+            // уровень — индекс 1. Без этого SceneManager.LoadScene("01_Lawn") в билде упадёт.
+            MainMenuSceneBuilder.AddToBuildSettings("Assets/Scenes/00_MainMenu.unity", 0);
+            MainMenuSceneBuilder.AddToBuildSettings(ScenePath, 1);
+
             Debug.Log($"[Donut Quest] Сцена готова: {ScenePath}. Жми Play.");
         }
 

@@ -26,6 +26,10 @@ namespace DonutQuest.Gameplay
         public float coyoteTime = 0.1f;
         public float jumpBuffer = 0.1f;
 
+        [Header("Собиралки")]
+        public int cucumbers;
+        public int cheese;
+
         public bool IsGrounded => _cc.isGrounded;
         public bool IsSprinting => _sprintLeft > 0f;
         /// <summary>0..1 — для полоски выносливости в HUD.</summary>
@@ -43,6 +47,29 @@ namespace DonutQuest.Gameplay
         {
             _cc = GetComponent<CharacterController>();
             _input = GetComponent<KorraInput>();
+        }
+
+        void Start()
+        {
+            // Если меню загрузило сейв, применяем позицию и собранное.
+            ApplyPendingSave();
+        }
+
+        void ApplyPendingSave()
+        {
+            if (!SaveLoadBridge.HasPending) return;
+
+            SaveData data = SaveLoadBridge.Take();
+            if (data == null) return;
+
+            // Телепорт, а не transform.position: CharacterController кэширует позицию,
+            // и прямая запись может не сработать в первый кадр.
+            Teleport(data.Position);
+            cucumbers = data.cucumbers;
+            cheese = data.cheese;
+
+            Debug.Log($"[Korra] Загружено из сейва: позиция {data.Position}, " +
+                      $"огурчики {cucumbers}, сыр {cheese}");
         }
 
         void Update()
