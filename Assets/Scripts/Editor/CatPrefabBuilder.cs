@@ -25,6 +25,9 @@ namespace DonutQuest.EditorTools
         [MenuItem("Donut Quest/Собрать префаб Кота")]
         public static void Build()
         {
+            // Принудительная реимпортация модели (чтобы Unity применил настройки из .meta).
+            AssetDatabase.ImportAsset(FbxPath, ImportAssetOptions.ForceUpdate);
+            
             var model = AssetDatabase.LoadAssetAtPath<GameObject>(FbxPath);
             if (model == null)
             {
