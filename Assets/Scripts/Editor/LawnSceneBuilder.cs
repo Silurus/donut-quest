@@ -17,6 +17,7 @@ namespace DonutQuest.EditorTools
         const string ScenePath = "Assets/Scenes/01_Lawn.unity";
         const string MaterialsDir = "Assets/Materials";
         const string KorraPrefabPath = "Assets/Prefabs/Korra.prefab";
+        const string CatPrefabPath = "Assets/Prefabs/Cat.prefab";
 
         [MenuItem("Donut Quest/Создать сцену 01_Lawn")]
         public static void Build()
@@ -75,6 +76,18 @@ namespace DonutQuest.EditorTools
             else
             {
                 Debug.LogWarning("[Donut Quest] Нет префаба Корры. Сначала: Donut Quest → Собрать префаб Корры.");
+            }
+
+            // Кот рядом с кустом (патрулирует туда-обратно)
+            var catPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(CatPrefabPath);
+            if (catPrefab != null)
+            {
+                var cat = (GameObject)PrefabUtility.InstantiatePrefab(catPrefab);
+                cat.transform.position = new Vector3(10.5f, 0.1f, 0f);
+            }
+            else
+            {
+                Debug.LogWarning("[Donut Quest] Нет префаба Кота. Сначала: Donut Quest → Собрать префаб Кота.");
             }
 
             // Камера сбоку

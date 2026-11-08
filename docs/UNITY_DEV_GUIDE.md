@@ -188,6 +188,64 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 
 ---
 
+## Как собрать кота в префаб
+
+Меню: **Donut Quest → Собрать префаб Кота**.
+
+Что делает (`Assets/Scripts/Editor/CatPrefabBuilder.cs`):
+- читает `Cat.fbx` из `Assets/Models/Cat/` (рыжий кот от Quaternius, CC0);
+- создаёт `CatAnimator.controller` с двумя состояниями: `Idle` (дефолт), `Walking`;
+- собирает корень `Cat` с `CapsuleCollider` (radius 0.2, height 0.7, center (0, 0.35, 0)) + `CatBehaviour`;
+- внутрь кладёт модель с `Animator`.
+
+Готовый префаб — `Assets/Prefabs/Cat.prefab`.
+
+**CatBehaviour.cs** — реализует `IBarkReactive`:
+- Состояния: `Idle` (стоит или патрулирует), `Scared` (испугался, убегает), `Frozen` (застыл, больше не реагирует)
+- Патруль: если `patrolEnd != null`, кот ходит туда-обратно между `transform.position` (точка A) и `patrolEnd.position` (точка B) со скоростью `patrolSpeed` (1.2 м/с)
+- Реакция на лай (`OnBark(Transform source)`):
+  1. Кот разворачивается **от** Корры (`source`)
+  2. Переходит в `Scared` → анимация `Walking` ускоряется (`scaredSpeed` 5 м/с)
+  3. Убегает на `scaredRunDistance` метров (8 м по умолчанию)
+  4. Роняет `dropObject` (если указан) — `SetActive(false)` + отцепление от родителя
+  5. Спаунит `poopPrefab` (если указан) на месте кота
+  6. После пробега → `Frozen`, больше не реагирует на лай
+- CapsuleCollider — чтобы `KorraBark.Physics.OverlapSphere` его находил
+
+**KorraBark.cs** (на Корре):
+- Кнопка X (Steam Deck buttonWest / клавиша E) → лай, cooldown 0.5 с
+- `Physics.OverlapSphere(transform.position, barkRadius, targetLayers)` — ищет всех с `IBarkReactive`
+- Вызывает `OnBark(transform)` на каждом найденном
+- Опционально спаунит визуальную волну (`barkWavePrefab`, живёт `waveDuration` секунд)
+- **Gizmo**: жёлтая полупрозрачная сфера в редакторе — видно радиус лая
+
+**IBarkReactive.cs** — интерфейс для всех, кто реагирует на лай (кот, птицы, сосед).
+
+Имена клипов в `Cat.fbx`: `CatArmature|Idle`, `CatArmature|Walking`.
+
+Повторный запуск меню пересобирает префаб.
+
+---
+
+## Сцена 01_Lawn
+
+Меню: **Donut Quest → Создать сцену 01_Lawn**.
+
+Собирает тестовый уровень:
+- Плоскость земли (60 × 6 м, материал Grass зелёный)
+- Куст (сфера, материал BushLeaves тёмно-зелёный) — позже заменить моделью из Kenney Nature Kit
+- SaveZone (невидимый BoxCollider-триггер 2×2×2 м, на дорожке перед кустом)
+- Направленный свет (тёплое вечернее солнце)
+- Камера сбоку (SideCamera следит за Коррой, FOV 40°, фон тёплый)
+- Корра (позиция (0, 0.1, 0))
+- Кот (позиция (10.5, 0.1, 0) рядом с кустом)
+
+**Пересоздание перезаписывает сцену** — все ручные правки (перемещённые объекты, новые скрипты) пропадут.
+
+Сцена добавляется в Build Settings с индексом 1 (меню — индекс 0).
+
+---
+
 ## Скрипты персонажа
 
 | Файл | Что делает |
@@ -195,11 +253,15 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 | `Scripts/Gameplay/KorraInput.cs` | Ввод: стик, крестовина, A/B/X/Y, клавиатура. Действия создаются в коде, без `.inputactions`-ассета |
 | `Scripts/Gameplay/KorraController.cs` | Физика: шаг, бег, рывок, прыжок с coyote time и буфером нажатия |
 | `Scripts/Gameplay/KorraAnimator.cs` | Анимации: выбор клипа по состоянию движения |
+| `Scripts/Gameplay/KorraBark.cs` | Лай на X: OverlapSphere ищет IBarkReactive, cooldown, Gizmo радиуса |
+| `Scripts/Gameplay/IBarkReactive.cs` | Интерфейс для реакций на лай (кот, птицы, сосед) |
+| `Scripts/Gameplay/CatBehaviour.cs` | Кот: патруль, испуг, сброс предмета, спаун какашки, состояния Idle/Scared/Frozen |
 | `Scripts/Gameplay/SaveSystem.cs` | Сейв: атомарная запись JSON в `persistentDataPath`, один слот |
 | `Scripts/Gameplay/SaveLoadBridge.cs` | Передача сейва из меню в уровень (статическое поле, переживает `LoadScene`) |
 | `Scripts/Gameplay/MainMenu.cs` | Главное меню на IMGUI: «Продолжить», «Новая игра», «Выход» |
 | `Scripts/Gameplay/SaveZone.cs` | Зона сохранения: удержание X, пишет позицию и счётчики |
-| `Scripts/Editor/KorraPrefabBuilder.cs` | Сборка префаба, только для редактора |
+| `Scripts/Editor/KorraPrefabBuilder.cs` | Сборка префаба Корры, только для редактора |
+| `Scripts/Editor/CatPrefabBuilder.cs` | Сборка префаба Кота, только для редактора |
 | `Scripts/Editor/LawnSceneBuilder.cs` | Сборка сцены уровня, только для редактора |
 | `Scripts/Editor/MainMenuSceneBuilder.cs` | Сборка сцены меню, только для редактора |
 
