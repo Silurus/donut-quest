@@ -51,7 +51,7 @@ namespace DonutQuest.EditorTools
             anim.runtimeAnimatorController = ctrl;
 
             var cat = root.AddComponent<CatBehaviour>();
-            // Имена клипов — Quaternius Cat.fbx стандартные имена.
+            // Имена клипов из Cat.fbx.meta (CatArmature|Idle, CatArmature|Walking).
             cat.idleClip = idleClip;
             cat.walkClip = walkClip;
 
@@ -81,7 +81,7 @@ namespace DonutQuest.EditorTools
 
         static AnimatorController BuildController(GameObject model)
         {
-            var clips = GetClips(model, idleClip, walkClip);
+            var clips = GetClips(model, "Idle", "Walk");
             if (clips[0] == null || clips[1] == null)
             {
                 Debug.LogError("[CatPrefabBuilder] Не найдены клипы Idle и Walk в Cat.fbx. " +
@@ -96,7 +96,7 @@ namespace DonutQuest.EditorTools
             {
                 var state = root.AddState(clip.name);
                 state.motion = clip;
-                if (clip.name == idleClip)
+                if (clip.name == "Idle")
                     root.defaultState = state;
             }
 
