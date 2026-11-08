@@ -81,10 +81,10 @@ namespace DonutQuest.EditorTools
 
         static AnimatorController BuildController(GameObject model)
         {
-            var clips = GetClips(model, "Idle", "Walk");
+            var clips = GetClips(model, idleClip, walkClip);
             if (clips[0] == null || clips[1] == null)
             {
-                Debug.LogError("[CatPrefabBuilder] Не найдены клипы Idle и Walk в Cat.fbx. " +
+                Debug.LogError("[CatPrefabBuilder] Не найдены клипы в Cat.fbx. " +
                                "Открой модель в инспекторе → Animation → убедись, что клипы есть.");
                 return null;
             }
@@ -96,7 +96,7 @@ namespace DonutQuest.EditorTools
             {
                 var state = root.AddState(clip.name);
                 state.motion = clip;
-                if (clip.name == "Idle")
+                if (clip.name == idleClip)
                     root.defaultState = state;
             }
 
