@@ -192,6 +192,11 @@ Unity создаёт в любой сцене `Main Camera` и `Directional Ligh
 
 Меню: **Donut Quest → Собрать префаб Кота**.
 
+**Перед сборкой** проверь импорт модели:
+1. Кликни `Cat.fbx` в Project → Inspector → вкладка **Animation**
+2. Должно быть два клипа: `CatArmature|Idle`, `CatArmature|Walking`
+3. Если клипов нет — включи **Import Animation** и **Animation Method → Mecanim**, нажми **Apply**
+
 Что делает (`Assets/Scripts/Editor/CatPrefabBuilder.cs`):
 - читает `Cat.fbx` из `Assets/Models/Cat/` (рыжий кот от Quaternius, CC0);
 - создаёт `CatAnimator.controller` с двумя состояниями: `Idle` (дефолт), `Walking`;

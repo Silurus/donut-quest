@@ -71,6 +71,8 @@ namespace DonutQuest.EditorTools
             {
                 var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
                 go.transform.position = new Vector3(0f, 0.1f, 0f);
+                // Стартовый поворот: вправо (движение по +X), лицом к камере (Z=-7).
+                go.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
                 korra = go.transform;
             }
             else
