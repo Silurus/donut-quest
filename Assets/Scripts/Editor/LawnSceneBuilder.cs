@@ -85,7 +85,7 @@ namespace DonutQuest.EditorTools
             if (catPrefab != null)
             {
                 var cat = (GameObject)PrefabUtility.InstantiatePrefab(catPrefab);
-                cat.transform.position = new Vector3(10.5f, 0.1f, 0f);
+                cat.transform.position = new Vector3(10.5f, 0f, 0f);
             }
             else
             {

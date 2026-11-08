@@ -22,6 +22,11 @@ namespace DonutQuest.EditorTools
         const string idleClip = "CatArmature|Idle";
         const string walkClip = "CatArmature|Walking";
 
+        /// <summary>
+        /// Поворот модели вокруг Y
+        /// </summary>
+        const float ModelYaw = -90;
+
         [MenuItem("Donut Quest/Собрать префаб Кота")]
         public static void Build()
         {
@@ -46,8 +51,7 @@ namespace DonutQuest.EditorTools
             var modelGo = (GameObject)PrefabUtility.InstantiatePrefab(model);
             modelGo.name = "Model";
             modelGo.transform.SetParent(root.transform, false);
-            // Поворот: Cat.fbx от Quaternius смотрит по +Z, нам нужно +X (вправо).
-            modelGo.transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
+            modelGo.transform.localRotation = Quaternion.Euler(0f, ModelYaw, 0f);
 
             var anim = modelGo.GetComponent<Animator>();
             if (anim == null) anim = modelGo.AddComponent<Animator>();
