@@ -1,138 +1,138 @@
+using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.Animations;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using DonutQuest.Gameplay;
 
 namespace DonutQuest.EditorTools
 {
     /// <summary>
+    /// Сборка кота из модели в один клик.
     /// Меню: Donut Quest → Собрать префаб Кота.
-    /// Создаёт prefab Assets/Prefabs/Cat.prefab с Animator + CatBehaviour.
     ///
-    /// Требования: Cat.fbx должен быть в проекте; у него должны быть клипы Idle и Walk.
-    /// Откроет сцену 01_Lawn и поставит кота в точку (8.5, 0.1, 0) рядом с кустом.
+    /// Что делает:
+    /// 1. Берёт cat.glb из Assets/Models/Cat.
+    /// 2. Создаёт Animator Controller со всеми клипами модели.
+    ///    Дефолтное состояние — Idle (или первый клип, если Idle нет).
+    /// 3. Собирает Assets/Prefabs/Cat.prefab: корень с CatBehaviour + коллайдером,
+    ///    внутри — модель с Animator.
+    ///
+    /// Анимации в cat.glb: Idle, WalkClean, SitDown, SittingIdle, StandUp.
+    /// CatBehaviour использует idleClip="Idle", walkClip="WalkClean".
+    ///
+    /// Повторный запуск пересобирает префаб.
     /// </summary>
     public static class CatPrefabBuilder
     {
-        const string FbxPath     = "Assets/Models/Cat/Cat.fbx";
-        const string PrefabPath  = "Assets/Prefabs/Cat.prefab";
+        const string ModelPath      = "Assets/Models/Cat/cat.glb";
         const string ControllerPath = "Assets/Models/Cat/CatAnimator.controller";
-
-        const string idleClip = "CatArmature|Idle";
-        const string walkClip = "CatArmature|Walking";
+        const string PrefabPath     = "Assets/Prefabs/Cat.prefab";
 
         /// <summary>
-        /// Поворот модели вокруг Y
+        /// Поворот модели вокруг Y. Если кот бежит задом наперёд — поменяй на 180f.
         /// </summary>
-        const float ModelYaw = -90;
+        const float ModelYaw = 0f;
 
         [MenuItem("Donut Quest/Собрать префаб Кота")]
         public static void Build()
         {
-            // Принудительная реимпортация модели (чтобы Unity применил настройки из .meta).
-            AssetDatabase.ImportAsset(FbxPath, ImportAssetOptions.ForceUpdate);
-            
-            var model = AssetDatabase.LoadAssetAtPath<GameObject>(FbxPath);
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>(ModelPath);
             if (model == null)
             {
-                Debug.LogError($"[CatPrefabBuilder] Не найдена модель: {FbxPath}");
+                EditorUtility.DisplayDialog("Нет модели",
+                    $"Не нашёл {ModelPath}.\n" +
+                    "Положи cat.glb в Assets/Models/Cat/ и повтори.",
+                    "Понял");
                 return;
             }
 
-            // ---- Animator Controller ----
-            var ctrl = BuildController(model);
-            if (ctrl == null) return;
+            var clips = LoadClips(ModelPath);
+            if (clips.Count == 0)
+            {
+                EditorUtility.DisplayDialog("Нет анимаций",
+                    "В модели не нашлось ни одного клипа.\n\n" +
+                    "Выбери cat.glb в Project, в инспекторе включи:\n" +
+                    "• Animation → Import Animation\n" +
+                    "• Animation → Animation Method → Mecanim\n" +
+                    "Потом нажми Apply и запусти сборку снова.",
+                    "Понял");
+                return;
+            }
 
-            // ---- Префаб ----
+            var controller = BuildController(clips);
+            var prefab     = BuildPrefab(model, controller);
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Selection.activeObject = prefab;
+            EditorGUIUtility.PingObject(prefab);
+
+            Debug.Log($"[Donut Quest] Кот готов: {PrefabPath}. Клипы: {string.Join(", ", clips.ConvertAll(c => c.name))}");
+        }
+
+        static List<AnimationClip> LoadClips(string path)
+        {
+            var result = new List<AnimationClip>();
+            foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+                if (obj is AnimationClip clip && !clip.name.StartsWith("__preview__"))
+                    result.Add(clip);
+            return result;
+        }
+
+        static AnimatorController BuildController(List<AnimationClip> clips)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(ControllerPath));
+            AssetDatabase.DeleteAsset(ControllerPath);
+
+            var ctrl = AnimatorController.CreateAnimatorControllerAtPath(ControllerPath);
+            var sm   = ctrl.layers[0].stateMachine;
+
+            AnimatorState first = null, idle = null;
+            foreach (var clip in clips)
+            {
+                var st = sm.AddState(clip.name);
+                st.motion = clip;
+                if (first == null) first = st;
+                if (idle == null && clip.name.ToLowerInvariant() == "idle") idle = st;
+            }
+
+            sm.defaultState = idle != null ? idle : first;
+            return ctrl;
+        }
+
+        static GameObject BuildPrefab(GameObject model, AnimatorController controller)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(PrefabPath));
+
             var root = new GameObject("Cat");
 
-            // Модель дочерним объектом (как у Корры).
-            var modelGo = (GameObject)PrefabUtility.InstantiatePrefab(model);
-            modelGo.name = "Model";
-            modelGo.transform.SetParent(root.transform, false);
-            modelGo.transform.localRotation = Quaternion.Euler(0f, ModelYaw, 0f);
-
-            var anim = modelGo.GetComponent<Animator>();
-            if (anim == null) anim = modelGo.AddComponent<Animator>();
-            anim.runtimeAnimatorController = ctrl;
-
-            var cat = root.AddComponent<CatBehaviour>();
-            // Имена клипов из Cat.fbx.meta (CatArmature|Idle, CatArmature|Walking).
-            cat.idleClip = idleClip;
-            cat.walkClip = walkClip;
-
-            // Коллайдер для OverlapSphere (IBarkReactive).
+            // Коллайдер для OverlapSphere KorraBark (IBarkReactive).
             var col = root.AddComponent<CapsuleCollider>();
             col.center = new Vector3(0f, 0.35f, 0f);
             col.radius = 0.2f;
             col.height = 0.7f;
 
-            // Сохраняем и подчищаем.
-            System.IO.Directory.CreateDirectory("Assets/Prefabs");
-            bool saved = false;
-            var prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath, out saved);
+            var cat = root.AddComponent<CatBehaviour>();
+            // Имена клипов как в cat.glb (DreamNoms — Somali Cat Animated).
+            cat.idleClip = "Idle";
+            cat.walkClip = "WalkClean";
+
+            // Модель — дочерний объект.
+            var visual = (GameObject)PrefabUtility.InstantiatePrefab(model);
+            visual.name = "Model";
+            visual.transform.SetParent(root.transform, false);
+            visual.transform.localPosition = Vector3.zero;
+            visual.transform.localRotation = Quaternion.Euler(0f, ModelYaw, 0f);
+
+            var animator = visual.GetComponent<Animator>();
+            if (animator == null) animator = visual.AddComponent<Animator>();
+            animator.runtimeAnimatorController = controller;
+            animator.applyRootMotion = false;
+
+            var prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);
-
-            if (!saved)
-            {
-                Debug.LogError("[CatPrefabBuilder] Не удалось сохранить префаб");
-                return;
-            }
-
-            Debug.Log($"[CatPrefabBuilder] ✓ Префаб сохранён: {PrefabPath}");
-
-            // Добавляем в открытую сцену рядом с кустом, если там уже есть SaveZone_01.
-            PlaceCatInScene(prefab);
-        }
-
-        static AnimatorController BuildController(GameObject model)
-        {
-            var clips = GetClips(model, idleClip, walkClip);
-            if (clips[0] == null || clips[1] == null)
-            {
-                Debug.LogError("[CatPrefabBuilder] Не найдены клипы в Cat.fbx. " +
-                               "Открой модель в инспекторе → Animation → убедись, что клипы есть.");
-                return null;
-            }
-
-            var ctrl = AnimatorController.CreateAnimatorControllerAtPath(ControllerPath);
-            var root = ctrl.layers[0].stateMachine;
-
-            foreach (var clip in clips)
-            {
-                var state = root.AddState(clip.name);
-                state.motion = clip;
-                if (clip.name == idleClip)
-                    root.defaultState = state;
-            }
-
-            return ctrl;
-        }
-
-        static AnimationClip[] GetClips(GameObject model, params string[] names)
-        {
-            var allClips = AssetDatabase.LoadAllAssetsAtPath(FbxPath);
-            var result = new AnimationClip[names.Length];
-            for (int i = 0; i < names.Length; i++)
-            {
-                foreach (var a in allClips)
-                    if (a is AnimationClip c && c.name == names[i])
-                        { result[i] = c; break; }
-            }
-            return result;
-        }
-
-        static void PlaceCatInScene(GameObject prefab)
-        {
-            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            if (!scene.IsValid() || scene.name != "01_Lawn") return;
-
-            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-            // Рядом с кустом-зоной сохранения.
-            go.transform.position = new Vector3(10.5f, 0.1f, 0f);
-            EditorSceneManager.MarkSceneDirty(scene);
-            Debug.Log("[CatPrefabBuilder] Кот добавлен в сцену 01_Lawn в позицию (10.5, 0.1, 0). Сохрани сцену.");
+            return prefab;
         }
     }
 }
