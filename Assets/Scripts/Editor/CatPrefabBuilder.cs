@@ -19,6 +19,9 @@ namespace DonutQuest.EditorTools
         const string PrefabPath  = "Assets/Prefabs/Cat.prefab";
         const string ControllerPath = "Assets/Models/Cat/CatAnimator.controller";
 
+        const string idleClip = "CatArmature|Idle";
+        const string walkClip = "CatArmature|Walking";
+
         [MenuItem("Donut Quest/Собрать префаб Кота")]
         public static void Build()
         {
@@ -49,8 +52,8 @@ namespace DonutQuest.EditorTools
 
             var cat = root.AddComponent<CatBehaviour>();
             // Имена клипов — Quaternius Cat.fbx стандартные имена.
-            cat.idleClip = "Idle";
-            cat.walkClip = "Walk";
+            cat.idleClip = idleClip;
+            cat.walkClip = walkClip;
 
             // Коллайдер для OverlapSphere (IBarkReactive).
             var col = root.AddComponent<CapsuleCollider>();
@@ -78,7 +81,7 @@ namespace DonutQuest.EditorTools
 
         static AnimatorController BuildController(GameObject model)
         {
-            var clips = GetClips(model, "Idle", "Walk");
+            var clips = GetClips(model, idleClip, walkClip);
             if (clips[0] == null || clips[1] == null)
             {
                 Debug.LogError("[CatPrefabBuilder] Не найдены клипы Idle и Walk в Cat.fbx. " +
@@ -93,7 +96,7 @@ namespace DonutQuest.EditorTools
             {
                 var state = root.AddState(clip.name);
                 state.motion = clip;
-                if (clip.name == "Idle")
+                if (clip.name == idleClip)
                     root.defaultState = state;
             }
 

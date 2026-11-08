@@ -49,8 +49,8 @@ namespace DonutQuest.Gameplay
         public GameObject poopPrefab;
 
         [Header("Имена клипов (как в Cat.fbx)")]
-        public string idleClip = "Idle";
-        public string walkClip = "Walk";
+        public string idleClip = "CatArmature|Idle";
+        public string walkClip = "CatArmature|Walking";
 
         Animator _anim;
         public CatState State { get; private set; } = CatState.Idle;

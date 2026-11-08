@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8258543389157285420}
   - component: {fileID: 1794794378197081977}
   - component: {fileID: 6785513111807026798}
+  - component: {fileID: 6661881033588372751}
   m_Layer: 0
   m_Name: Korra
   m_TagString: Player
@@ -94,6 +95,27 @@ MonoBehaviour:
   jumpCutMultiplier: 0.5
   coyoteTime: 0.1
   jumpBuffer: 0.1
+  cucumbers: 0
+  cheese: 0
+--- !u!114 &6661881033588372751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2950676120777592246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2f094c0b0a5f4d4bad6014e22fbd131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DonutQuest.Gameplay.KorraBark
+  barkRadius: 4
+  cooldown: 0.5
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  barkWavePrefab: {fileID: 0}
+  waveDuration: 0.6
 --- !u!1001 &5736713886734448779
 PrefabInstance:
   m_ObjectHideFlags: 0
